@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | ERP Sistema</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+
+</head>
+
+
+<body class="dashboard-body">
+
+
+    <!-- =========================================
+         BARRA LATERAL
+    ========================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-logo">
+
+            <div class="sidebar-logo-icon">
+                ▦
+            </div>
+
+            <span>
+                ERP sistema
+            </span>
+
+        </div>
+
+
+        <!-- MENÚ -->
+
+        <nav class="sidebar-menu">
+
+
+            <a href="dashboard.html" class="sidebar-item activo">
+
+                <span class="menu-icon">▦</span>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">◇</span>
+
+                <span>Productos</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">▦</span>
+
+                <span>Categorías</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">◇</span>
+
+                <span>Inventario</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">♙</span>
+
+                <span>Clientes</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">♙</span>
+
+                <span>Proveedores</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">🛒</span>
+
+                <span>Ventas</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">♙</span>
+
+                <span>Usuarios</span>
+
+            </a>
+
+
+            <a href="#" class="sidebar-item">
+
+                <span class="menu-icon">⚙</span>
+
+                <span>Configuración</span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- CERRAR SESIÓN -->
+
+        <button id="cerrarSesion" class="cerrar-sesion">
+
+            <span>◯</span>
+
+            Cerrar sesión
+
+        </button>
+
+
+    </aside>
+
+
+
+    <!-- =========================================
+         CONTENIDO PRINCIPAL
+    ========================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- ENCABEZADO -->
+
+        <header class="dashboard-header">
+
+
+            <div class="bienvenida">
+
+                <h1>
+                    ¡Bienvenido Juan!
+                </h1>
+
+                <p>
+                    Aquí tienes un resumen de lo que está
+                    pasando en tu empresa
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+
+                <!-- NOTIFICACIONES -->
+
+                <button
+                    class="notificaciones"
+                    id="btnNotificaciones"
+                >
+                    ♧
+                    <span class="contador">3</span>
+                </button>
+
+
+                <!-- BUSCADOR -->
+
+                <div class="buscador">
+
+                    <span>⌕</span>
+
+                    <input
+                        type="search"
+                        id="busqueda"
+                        placeholder="Búsqueda..."
+                    >
+
+                </div>
+
+
+                <!-- PERFIL -->
+
+                <div class="perfil">
+
+                    <div class="avatar">
+                        J
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================================
+             PANEL PRINCIPAL
+        ========================================== -->
+
+        <section class="dashboard-contenido">
+
+
+            <h2>
+                Panel principal
+            </h2>
+
+
+            <!-- =====================================
+                 INDICADORES
+            ====================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- INVENTARIO -->
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        📦
+                    </div>
+
+                    <div class="stat-info">
+
+                        <span>
+                            Inventario total
+                        </span>
+
+                        <strong>
+                            1.250
+                        </strong>
+
+                        <small>
+                            Productos
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+                <!-- USUARIOS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ♙
+                    </div>
+
+                    <div class="stat-info">
+
+                        <span>
+                            Usuarios registrados
+                        </span>
+
+                        <strong>
+                            86
+                        </strong>
+
+                        <small>
+                            Usuarios
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+                <!-- VENTAS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        $
+                    </div>
+
+                    <div class="stat-info">
+
+                        <span>
+                            Ventas del día
+                        </span>
+
+                        <strong>
+                            $2.450.000
+                        </strong>
+
+                        <small>
+                            Total ventas
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+                <!-- PEDIDOS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        ▤
+                    </div>
+
+                    <div class="stat-info">
+
+                        <span>
+                            Pedidos pendientes
+                        </span>
+
+                        <strong>
+                            12
+                        </strong>
+
+                        <small>
+                            Pedidos
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+                <!-- GRÁFICO -->
+
+                <article class="grafico-card">
+
+                    <div class="grafico-barras">
+
+                        <div class="barra barra-1"></div>
+
+                        <div class="barra barra-2"></div>
+
+                        <div class="barra barra-3"></div>
+
+                        <div class="barra barra-4"></div>
+
+                    </div>
+
+                    <h3>
+                        Ventas e Ingresos
+                    </h3>
+
+                </article>
+
+
+                <!-- ALERTAS -->
+
+                <article class="alertas-card">
+
+                    <h3>
+                        Alertas y Pendientes
+                    </h3>
+
+                    <div class="alerta-linea"></div>
+
+                    <div class="alerta-linea"></div>
+
+                    <div class="alerta-linea"></div>
+
+                    <div class="alerta-linea"></div>
+
+                    <button id="verAlertas">
+                        Ver todas las alertas...
+                    </button>
+
+                </article>
+
+
+            </div>
+
+
+
+            <!-- =====================================
+                 ACCIONES RÁPIDAS
+            ====================================== -->
+
+            <section class="acciones-rapidas">
+
+                <h2>
+                    Acciones rápidas
+                </h2>
+
+
+                <div class="acciones-grid">
+
+
+                    <button class="accion-card" id="nuevaVenta">
+
+                        <span>
+                            🛒
+                        </span>
+
+                        <strong>
+                            Nueva venta +
+                        </strong>
+
+                    </button>
+
+
+                    <button class="accion-card" id="nuevoProducto">
+
+                        <span>
+                            📦
+                        </span>
+
+                        <strong>
+                            Nuevo producto +
+                        </strong>
+
+                    </button>
+
+
+                    <button class="accion-card" id="nuevaFactura">
+
+                        <span>
+                            ▤
+                        </span>
+
+                        <strong>
+                            Nueva factura +
+                        </strong>
+
+                    </button>
+
+
+                    <button class="accion-card" id="nuevoReporte">
+
+                        <span>
+                            📊
+                        </span>
+
+                        <strong>
+                            Nuevo reporte +
+                        </strong>
+
+                    </button>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================
+                 ACTIVIDAD RECIENTE
+            ====================================== -->
+
+            <section class="actividad">
+
+
+                <div class="actividad-header">
+
+                    <h2>
+                        Actividad reciente
+                    </h2>
+
+                </div>
+
+
+                <div class="actividad-lista">
+
+
+                    <div class="actividad-item">
+
+                        <span>
+                            Nueva venta registrada
+                        </span>
+
+                        <small>
+                            Hace 10 minutos
+                        </small>
+
+                    </div>
+
+
+                    <div class="actividad-item">
+
+                        <span>
+                            Producto actualizado
+                        </span>
+
+                        <small>
+                            Hace 25 minutos
+                        </small>
+
+                    </div>
+
+
+                    <div class="actividad-item">
+
+                        <span>
+                            Nuevo usuario registrado
+                        </span>
+
+                        <small>
+                            Hace 1 hora
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+                <button
+                    class="ver-actividad"
+                    id="verActividad"
+                >
+                    Ver toda la actividad reciente...
+                </button>
+
+
+            </section>
+
+
+        </section>
+
+    </main>
+
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registro de Usuario | ERP Sistema</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+
+</head>
+
+
+<body class="pagina-registro">
+
+
+    <main class="registro-contenedor">
+
+
+        <section class="registro-card">
+
+
+            <!-- ENCABEZADO -->
+
+            <div class="registro-header">
+
+                <div class="registro-icono">
+                    👤
+                </div>
+
+                <h1>Registro de Usuario</h1>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 PASO 1
+            ====================================== -->
+
+            <div
+                id="paso1"
+                class="registro-paso activo"
+            >
+
+                <form id="formPaso1">
+
+
+                    <!-- NOMBRES -->
+
+                    <div class="registro-campo">
+
+                        <label for="nombres">
+                            Nombres
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>👤</span>
+
+                            <input
+                                type="text"
+                                id="nombres"
+                                placeholder="Ingrese sus nombres"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- APELLIDOS -->
+
+                    <div class="registro-campo">
+
+                        <label for="apellidos">
+                            Apellidos
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>👤</span>
+
+                            <input
+                                type="text"
+                                id="apellidos"
+                                placeholder="Ingrese sus apellidos"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CÉDULA -->
+
+                    <div class="registro-campo">
+
+                        <label for="cedula">
+                            Cédula
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>🪪</span>
+
+                            <input
+                                type="text"
+                                id="cedula"
+                                placeholder="Ingrese su número de cédula"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- FECHA DE NACIMIENTO -->
+
+                    <div class="registro-campo">
+
+                        <label for="fechaNacimiento">
+                            Fecha de Nacimiento
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>📅</span>
+
+                            <input
+                                type="date"
+                                id="fechaNacimiento"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MENSAJE PASO 1 -->
+
+                    <div
+                        id="mensajePaso1"
+                        class="mensaje-registro"
+                    ></div>
+
+
+
+                    <!-- SIGUIENTE -->
+
+                    <button
+                        type="submit"
+                        class="registro-boton"
+                    >
+                        Siguiente
+                    </button>
+
+
+
+                    <!-- LOGIN -->
+
+                    <div class="registro-login">
+
+                        <span>
+                            ¿Ya tienes una cuenta?
+                        </span>
+
+                        <a href="login.html">
+                            Inicia sesión aquí
+                        </a>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 PASO 2
+            ====================================== -->
+
+            <div
+                id="paso2"
+                class="registro-paso"
+            >
+
+                <form id="formPaso2">
+
+
+                    <!-- NOMBRE DE USUARIO -->
+
+                    <div class="registro-campo">
+
+                        <label for="usuario">
+                            Nombre de Usuario
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>👤</span>
+
+                            <input
+                                type="text"
+                                id="usuario"
+                                placeholder="Ingrese su usuario"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CORREO -->
+
+                    <div class="registro-campo">
+
+                        <label for="correo">
+                            Correo
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>✉</span>
+
+                            <input
+                                type="email"
+                                id="correo"
+                                placeholder="Ingrese su correo"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CONTRASEÑA -->
+
+                    <div class="registro-campo">
+
+                        <label for="password">
+                            Contraseña
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>🔒</span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Ingrese su contraseña"
+                            >
+
+                            <button
+                                type="button"
+                                class="mostrar-password"
+                                id="mostrarPassword"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CONFIRMAR CONTRASEÑA -->
+
+                    <div class="registro-campo">
+
+                        <label for="confirmarPassword">
+                            Confirmar contraseña
+                        </label>
+
+                        <div class="registro-input">
+
+                            <span>🔒</span>
+
+                            <input
+                                type="password"
+                                id="confirmarPassword"
+                                placeholder="Ingrese nuevamente su contraseña"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MENSAJE PASO 2 -->
+
+                    <div
+                        id="mensajePaso2"
+                        class="mensaje-registro"
+                    ></div>
+
+
+
+                    <!-- REGISTRARSE -->
+
+                    <button
+                        type="submit"
+                        class="registro-boton"
+                    >
+                        Registrarse
+                    </button>
+
+
+
+                    <!-- VOLVER -->
+
+                    <button
+                        type="button"
+                        id="volverPaso1"
+                        class="registro-volver"
+                    >
+                        ← Volver
+                    </button>
+
+
+                </form>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <script src="js/registro.js"></script>
+
+</body>
+
+</html>
