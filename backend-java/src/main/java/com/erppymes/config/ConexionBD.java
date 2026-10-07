@@ -30,6 +30,8 @@ public class ConexionBD {
             String usuario = propiedades.getProperty("db.username");
             String password = propiedades.getProperty("db.password");
 
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             Connection conexion = DriverManager.getConnection(
                     url,
                     usuario,
@@ -44,6 +46,14 @@ public class ConexionBD {
 
             System.out.println(
                     "Error al leer la configuración de la base de datos."
+            );
+
+            System.out.println("Detalle: " + e.getMessage());
+
+        } catch (ClassNotFoundException e) {
+
+            System.out.println(
+                    "No se encontró el controlador de MySQL."
             );
 
             System.out.println("Detalle: " + e.getMessage());

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP PYMES - Usuarios</title>
+</head>
+
+<body>
+
+    <h1>ERP PYMES</h1>
+
+<h2>Registrar usuario</h2>
+
+<form action="usuarios" method="post">
+
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required>
+
+    <br><br>
+
+    <label for="correo">Correo:</label>
+    <input type="email" id="correo" name="correo" required>
+
+    <br><br>
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
+
+    <br><br>
+
+    <label for="rol">Rol:</label>
+    <select id="rol" name="rol" required>
+        <option value="">Seleccione un rol</option>
+        <option value="Administrador">Administrador</option>
+        <option value="Empleado">Empleado</option>
+    </select>
+
+    <br><br>
+
+    <label for="estado">Estado:</label>
+    <select id="estado" name="estado" required>
+        <option value="true">Activo</option>
+        <option value="false">Inactivo</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">Registrar usuario</button>
+
+</form>
+
+</body>
+
+</html>
