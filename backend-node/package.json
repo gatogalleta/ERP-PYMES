@@ -1,0 +1,27 @@
+
+{
+  "name": "backend-node",
+  "version": "1.0.0",
+  "description": "Backend de la aplicación web ERP para PYMES",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "check": "node --check src/app.js && node --check src/controllers/productosController.js && node --check src/routes/productosRoutes.js"
+  },
+  "keywords": [
+    "erp",
+    "pymes",
+    "nodejs",
+    "express",
+    "mysql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.5"
+  }
+}

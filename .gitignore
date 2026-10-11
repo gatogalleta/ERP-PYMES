@@ -1,5 +1,22 @@
+
+# Dependencias de Node.js
 node_modules/
+
+# Variables de entorno y credenciales
 .env
+.env.*
+!.env.example
+
+# Archivos de registro
 *.log
+
+# Archivos generados y compilados
 target/
+dist/
+build/
+
+# Configuración privada de bases de datos
 db.properties
+
+# Archivo de la tarea anterior de Java
+/backend-java.zip
