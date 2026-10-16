@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ function Login() {
     const [mensaje, setMensaje] = useState("");
     const [esError, setEsError] = useState(false);
     const [cargando, setCargando] = useState(false);
+    const [mostrarPassword, setMostrarPassword] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -37,19 +39,20 @@ function Login() {
             if (!response.ok) {
                 setEsError(true);
                 setMensaje(
-                    data.mensaje || "No fue posible iniciar sesión."
+                    data.mensaje ||
+                    "No fue posible iniciar sesión."
                 );
                 return;
             }
 
             console.log("Usuario autenticado:", data.usuario);
-            
+
             navigate("/dashboard");
         } catch (error) {
             console.error("Error de conexión:", error);
             setEsError(true);
             setMensaje(
-                "No fue posible conectar con el servidor."
+                "No fue posible conectar con el servidor. Verifica que el backend esté funcionando."
             );
         } finally {
             setCargando(false);
@@ -57,62 +60,172 @@ function Login() {
     };
 
     return (
-        <main>
-            <h1>Iniciar sesión</h1>
-            <p>ERP para PYMES</p>
+        <main className="login-page">
+            <div className="login-background-shape login-shape-one"></div>
+            <div className="login-background-shape login-shape-two"></div>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">
-                        Correo electrónico
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
-                        }
-                        placeholder="Ingrese su correo"
-                        autoComplete="username"
-                        required
-                    />
+            <Link to="/" className="login-back-home">
+                <span aria-hidden="true">←</span>
+                Volver al inicio
+            </Link>
+
+            <section className="login-container">
+                <div className="login-brand">
+                    <div className="login-brand-icon">E</div>
+
+                    <p className="login-brand-name">
+                        ERP <strong>PARA PYMES</strong>
+                    </p>
+
+                    <span className="login-brand-caption">
+                        GESTIÓN EMPRESARIAL
+                    </span>
                 </div>
 
-                <div>
-                    <label htmlFor="password">
-                        Contraseña
-                    </label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                        placeholder="Ingrese su contraseña"
-                        autoComplete="current-password"
-                        required
-                    />
+                <div className="login-card">
+                    <div className="login-card-heading">
+                        <span className="login-eyebrow">
+                            BIENVENIDO DE NUEVO
+                        </span>
+
+                        <h1>Iniciar sesión</h1>
+
+                        <p>
+                            Ingresa tus credenciales para acceder
+                            a tu espacio de trabajo.
+                        </p>
+                    </div>
+
+                    <form
+                        className="login-form"
+                        onSubmit={handleSubmit}
+                    >
+                        <div className="login-field">
+                            <label htmlFor="email">
+                                Correo electrónico
+                            </label>
+
+                            <div className="login-input-wrap">
+                                <span
+                                    className="login-input-icon"
+                                    aria-hidden="true"
+                                >
+                                    @
+                                </span>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(event) =>
+                                        setEmail(event.target.value)
+                                    }
+                                    placeholder="nombre@empresa.com"
+                                    autoComplete="username"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="login-field">
+                            <div className="login-password-heading">
+                                <label htmlFor="password">
+                                    Contraseña
+                                </label>
+                                <span className="login-private-label">
+                                    Acceso seguro
+                                </span>
+                            </div>
+
+                            <div className="login-input-wrap">
+                                <span
+                                    className="login-input-icon"
+                                    aria-hidden="true"
+                                >
+                                    *
+                                </span>
+
+                                <input
+                                    type={
+                                        mostrarPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    id="password"
+                                    value={password}
+                                    onChange={(event) =>
+                                        setPassword(event.target.value)
+                                    }
+                                    placeholder="Ingresa tu contraseña"
+                                    autoComplete="current-password"
+                                    required
+                                />
+
+                                <button
+                                    type="button"
+                                    className="login-show-password"
+                                    onClick={() =>
+                                        setMostrarPassword(
+                                            !mostrarPassword
+                                        )
+                                    }
+                                    aria-label={
+                                        mostrarPassword
+                                            ? "Ocultar contraseña"
+                                            : "Mostrar contraseña"
+                                    }
+                                >
+                                    {mostrarPassword
+                                        ? "Ocultar"
+                                        : "Ver"}
+                                </button>
+                            </div>
+                        </div>
+
+                        {mensaje && (
+                            <div
+                                className={
+                                    esError
+                                        ? "login-message login-message-error"
+                                        : "login-message login-message-success"
+                                }
+                                role="alert"
+                            >
+                                <span aria-hidden="true">
+                                    {esError ? "!" : "✓"}
+                                </span>
+                                <p>{mensaje}</p>
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            className="login-submit"
+                            disabled={cargando}
+                        >
+                            {cargando
+                                ? "Verificando acceso..."
+                                : "Ingresar al sistema"}
+
+                            {!cargando && (
+                                <span aria-hidden="true">→</span>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="login-security-note">
+                        <span aria-hidden="true">✓</span>
+                        <p>
+                            Tu acceso es validado por el servidor
+                            del sistema.
+                        </p>
+                    </div>
                 </div>
 
-                <button type="submit" disabled={cargando}>
-                    {cargando
-                        ? "Verificando..."
-                        : "Iniciar sesión"}
-                </button>
-            </form>
-
-            {mensaje && (
-                <p
-                    role="status"
-                    style={{
-                        color: esError ? "#b91c1c" : "#15803d"
-                    }}
-                >
-                    {mensaje}
+                <p className="login-footer">
+                    © 2026 ERP para PYMES · Plataforma de gestión empresarial
                 </p>
-            )}
+            </section>
         </main>
     );
 }
