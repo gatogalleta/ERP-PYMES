@@ -2606,3 +2606,216 @@
         font-size: 17px;
     }
 }
+
+
+/* =========================================
+   MEJORA VISUAL DEL DASHBOARD - VERSION 2
+   ========================================= */
+
+/* Aprovechar mejor el espacio de la pantalla */
+.erp-layout {
+    background: #f3f6fb;
+}
+
+.erp-main {
+    padding: 34px clamp(26px, 3vw, 48px) 28px;
+}
+
+/* Mejorar la legibilidad de los textos */
+.erp-page-eyebrow {
+    color: #526f95;
+    font-size: 11px;
+}
+
+.erp-header-modern h1 {
+    font-size: clamp(28px, 2.3vw, 34px);
+    line-height: 1.25;
+}
+
+.erp-header-modern p {
+    color: #52647b;
+    font-size: 14px;
+}
+
+.erp-profile-info strong {
+    color: #19375f;
+    font-size: 13px;
+}
+
+.erp-profile-info span {
+    color: #52647b;
+    font-size: 12px;
+}
+
+/* Dar más protagonismo al panel de bienvenida */
+.erp-welcome-modern {
+    min-height: 275px;
+    margin-bottom: 40px;
+    border-radius: 20px;
+    box-shadow: 0 14px 32px rgb(23 59 112 / 14%);
+}
+
+.erp-welcome-modern p {
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.erp-welcome-button {
+    min-height: 44px;
+    padding: 11px 17px;
+    font-size: 13px;
+}
+
+/* Mejorar el encabezado de los módulos */
+.erp-modules-heading {
+    margin-bottom: 22px;
+}
+
+.erp-modules-heading h2 {
+    font-size: 22px;
+}
+
+.erp-modules-heading p {
+    color: #52647b;
+    font-size: 14px;
+}
+
+.erp-module-count {
+    font-size: 11px;
+}
+
+/* Tarjetas más cómodas y fáciles de leer */
+.erp-cards-modern {
+    gap: 22px;
+}
+
+.erp-card-modern {
+    min-height: 220px;
+    padding: 25px;
+    border-color: #dce5f1;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgb(35 66 111 / 5%);
+}
+
+.erp-card-icon {
+    width: 47px;
+    height: 47px;
+    margin-bottom: 19px;
+}
+
+.erp-card-modern h3 {
+    font-size: 17px;
+}
+
+.erp-card-title-row > span {
+    font-size: 10px;
+}
+
+.erp-card-modern > p {
+    color: #52647b;
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+.erp-card-modern .erp-card-link {
+    font-size: 12px;
+}
+
+/* Diferenciar los módulos pendientes sin ocultarlos */
+.erp-card-unavailable {
+    background: #fafbfd;
+    border-style: dashed;
+}
+
+.erp-status-soon {
+    color: #69552f;
+    background: #f5eedf;
+}
+
+.erp-card-unavailable .erp-card-link {
+    color: #5c6c81;
+}
+
+/* Mejorar la lectura del pie de página */
+.erp-dashboard-footer {
+    color: #5c6c81;
+    font-size: 11px;
+}
+
+/* Ajustes para portátiles y ventanas medianas */
+@media (min-width: 761px) and (max-width: 1100px) {
+    .erp-main {
+        padding: 28px 24px;
+    }
+
+    .erp-header-modern {
+        gap: 16px;
+    }
+
+    .erp-header-profile {
+        gap: 9px;
+    }
+
+    .erp-profile-info strong {
+        max-width: 180px;
+        overflow-wrap: anywhere;
+    }
+
+    .erp-welcome-modern {
+        min-height: 250px;
+        padding: 30px;
+    }
+
+    .erp-cards-modern {
+        gap: 16px;
+    }
+
+    .erp-card-modern {
+        padding: 21px;
+    }
+}
+
+/* Ajustes para móviles: conservar el menú y la navegación */
+@media (max-width: 760px) {
+    .erp-main {
+        padding: 80px 22px 25px;
+    }
+
+    .erp-header-modern h1 {
+        font-size: 28px;
+    }
+
+    .erp-welcome-modern {
+        margin-bottom: 30px;
+        border-radius: 16px;
+    }
+
+    .erp-modules-heading h2 {
+        font-size: 21px;
+    }
+
+    .erp-cards-modern {
+        gap: 15px;
+    }
+
+    .erp-card-modern {
+        min-height: 190px;
+        padding: 22px;
+    }
+}
+
+/* Evitar que los ajustes se desborden en teléfonos pequeños */
+@media (max-width: 420px) {
+    .erp-main {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .erp-welcome-modern {
+        padding: 25px 20px;
+    }
+
+    .erp-card-modern {
+        padding: 19px;
+    }
+}
