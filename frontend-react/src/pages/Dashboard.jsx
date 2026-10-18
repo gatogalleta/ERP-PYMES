@@ -1,6 +1,6 @@
 
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
 
 const indicadores = [
@@ -40,11 +40,28 @@ const indicadores = [
 
 function Dashboard() {
     const navigate = useNavigate();
-    const [menuAbierto, setMenuAbierto] = useState(false);
+const [menuAbierto, setMenuAbierto] = useState(false);
+
+const [usuario] = useState(() => {
+    try {
+        return JSON.parse(
+            sessionStorage.getItem("erp_usuario") || "null"
+        );
+    } catch {
+        return null;
+    }
+});
+
+useEffect(() => {
+    if (!usuario) {
+        navigate("/login", { replace: true });
+    }
+}, [usuario, navigate]);
 
     const cerrarSesion = () => {
-        navigate("/");
-    };
+    sessionStorage.removeItem("erp_usuario");
+    navigate("/login", { replace: true });
+};
 
     return (
         <div className="erp-layout">
@@ -163,12 +180,15 @@ function Dashboard() {
                     </div>
 
                     <div className="erp-header-profile">
-                        <div className="erp-profile-avatar">E</div>
-                        <div className="erp-profile-info">
-                            <strong>Usuario del sistema</strong>
-                            <span>Área de administración</span>
-                        </div>
-                    </div>
+    <div className="erp-profile-avatar">
+        {usuario?.nombre?.trim()?.charAt(0)?.toUpperCase() || "U"}
+    </div>
+
+    <div className="erp-profile-info">
+        <strong>{usuario?.nombre || "Usuario"}</strong>
+        <span>{usuario?.rol || "Usuario del sistema"}</span>
+    </div>
+</div>
                 </header>
 
                 <section className="erp-welcome erp-welcome-modern">

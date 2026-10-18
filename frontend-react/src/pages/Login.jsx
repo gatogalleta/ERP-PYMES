@@ -45,9 +45,25 @@ function Login() {
                 return;
             }
 
-            console.log("Usuario autenticado:", data.usuario);
+            
+            if (!data.usuario) {
+                setEsError(true);
+                setMensaje("El servidor no devolvió los datos del usuario.");
+                return;
+            }
 
-            navigate("/dashboard");
+            sessionStorage.setItem(
+    "erp_usuario",
+    JSON.stringify(data.usuario)
+);
+
+console.log(
+    "Usuario guardado:",
+    sessionStorage.getItem("erp_usuario")
+);
+
+navigate("/dashboard");
+
         } catch (error) {
             console.error("Error de conexión:", error);
             setEsError(true);
