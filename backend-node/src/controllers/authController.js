@@ -135,7 +135,7 @@ async function login(req, res) {
 
         // Detectar si la contraseÃ±a ya estÃ¡ guardada como hash bcrypt
         const esHashBcrypt =
-            /^\$2[aby]\$\d{2}\$/.test(passwordGuardada);
+    /^\$2[aby]\$\d{2}\$/.test(passwordGuardada);
 
         let passwordCorrecta = false;
 
