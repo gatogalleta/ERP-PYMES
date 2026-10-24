@@ -1,6 +1,5 @@
-
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import ERPLayout from "../components/ERPLayout";
 import "../App.css";
 
 const API_URL = "http://localhost:3000/api";
@@ -36,7 +35,6 @@ function Products() {
     const [error, setError] = useState(false);
     const [cargando, setCargando] = useState(true);
     const [guardando, setGuardando] = useState(false);
-    const [menuAbierto, setMenuAbierto] = useState(false);
 
     // Consultar los productos, las categorías y los proveedores.
     const cargarDatos = useCallback(async () => {
@@ -54,10 +52,13 @@ function Products() {
                 throw new Error("No fue posible consultar los datos.");
             }
 
-            const [listaProductos, listaCategorias, listaProveedores] =
-                await Promise.all(
-                    respuestas.map((respuesta) => respuesta.json())
-                );
+            const [
+                listaProductos,
+                listaCategorias,
+                listaProveedores,
+            ] = await Promise.all(
+                respuestas.map((respuesta) => respuesta.json())
+            );
 
             setProductos(listaProductos);
             setCategorias(listaCategorias);
@@ -84,6 +85,7 @@ function Products() {
             .includes(busqueda.trim().toLowerCase())
     );
 
+    // Contar los productos activos.
     const productosActivos = productos.filter(
         (producto) => Number(producto.estado) === 1
     ).length;
@@ -121,7 +123,7 @@ function Products() {
     // Limpiar el formulario y cancelar la edición.
     function cancelarFormulario() {
         setMostrarFormulario(false);
-        setFormulario(formularioInicial);
+        setFormulario({ ...formularioInicial });
         setProductoEditando(null);
         setMensaje("");
         setError(false);
@@ -194,7 +196,7 @@ function Products() {
                 );
             }
 
-            setFormulario(formularioInicial);
+            setFormulario({ ...formularioInicial });
             setProductoEditando(null);
             setMostrarFormulario(false);
 
@@ -249,110 +251,17 @@ function Products() {
     }
 
     return (
-        <div className="erp-layout">
-            <button
-                type="button"
-                className="erp-mobile-menu"
-                onClick={() => setMenuAbierto(!menuAbierto)}
-                aria-label={
-                    menuAbierto ? "Cerrar menú" : "Abrir menú"
-                }
-                aria-expanded={menuAbierto}
-            >
-                {menuAbierto ? "✕" : "☰"}
-            </button>
-
-            {menuAbierto && (
-                <button
-                    type="button"
-                    className="erp-mobile-overlay"
-                    aria-label="Cerrar menú de navegación"
-                    onClick={() => setMenuAbierto(false)}
-                />
-            )}
-
-            <aside
-                className={`erp-sidebar ${
-                    menuAbierto ? "erp-sidebar-open" : ""
-                }`}
-            >
-                <Link
-                    to="/dashboard"
-                    className="erp-brand"
-                    onClick={() => setMenuAbierto(false)}
-                >
-                    <span className="erp-brand-icon">E</span>
-                    <span className="erp-brand-text">
-                        ERP
-                        <strong>PARA PYMES</strong>
-                    </span>
-                </Link>
-
-                <div className="erp-sidebar-caption">
-                    MENÚ PRINCIPAL
-                </div>
-
-                <nav aria-label="Navegación principal">
-                    <Link
-                        to="/dashboard"
-                        className="erp-nav-link"
-                        onClick={() => setMenuAbierto(false)}
-                    >
-                        <span className="erp-nav-icon">▦</span>
-                        Dashboard
-                    </Link>
-
-                    <Link
-                        to="/products"
-                        className="erp-nav-link erp-nav-active"
-                        onClick={() => setMenuAbierto(false)}
-                    >
-                        <span className="erp-nav-icon">▤</span>
-                        Productos
-                    </Link>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">↗</span>
-                        Ventas
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">▥</span>
-                        Inventario
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">▧</span>
-                        Reportes
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-                </nav>
-
-                <div className="erp-sidebar-bottom">
-                    <div className="erp-sidebar-help">
-                        <span className="erp-help-icon">i</span>
-                        <div>
-                            <strong>ERP para PYMES</strong>
-                            <p>Plataforma de gestión empresarial</p>
-                        </div>
-                    </div>
-
-                    <Link to="/" className="erp-logout">
-                        <span>↪</span>
-                        Volver al inicio
-                    </Link>
-                </div>
-            </aside>
-
+        <ERPLayout>
             <main className="erp-main products-main">
+                {/* Encabezado de la página */}
                 <header className="erp-header-modern">
                     <div className="erp-header-title">
                         <span className="erp-page-eyebrow">
                             ADMINISTRACIÓN DEL NEGOCIO
                         </span>
+
                         <h1>Gestión de productos</h1>
+
                         <p>
                             Consulta, registra y administra el catálogo
                             de productos de tu empresa.
@@ -361,6 +270,7 @@ function Products() {
 
                     <div className="erp-header-profile">
                         <div className="erp-profile-avatar">E</div>
+
                         <div className="erp-profile-info">
                             <strong>Usuario del sistema</strong>
                             <span>Área de administración</span>
@@ -368,9 +278,11 @@ function Products() {
                     </div>
                 </header>
 
+                {/* Tarjetas de resumen */}
                 <section className="products-summary">
                     <article className="products-summary-card">
                         <span className="products-summary-icon">▤</span>
+
                         <div>
                             <p>Total de productos</p>
                             <strong>
@@ -383,6 +295,7 @@ function Products() {
                         <span className="products-summary-icon products-summary-green">
                             ✓
                         </span>
+
                         <div>
                             <p>Productos activos</p>
                             <strong>
@@ -395,6 +308,7 @@ function Products() {
                         <span className="products-summary-icon products-summary-purple">
                             ⌕
                         </span>
+
                         <div>
                             <p>Categorías disponibles</p>
                             <strong>
@@ -404,10 +318,12 @@ function Products() {
                     </article>
                 </section>
 
+                {/* Área de búsqueda y administración */}
                 <section className="products-workspace">
                     <div className="products-toolbar products-toolbar-modern">
                         <div className="products-search">
                             <span aria-hidden="true">⌕</span>
+
                             <input
                                 type="search"
                                 placeholder="Buscar por nombre, categoría o proveedor..."
@@ -427,7 +343,7 @@ function Products() {
                                     cancelarFormulario();
                                 } else {
                                     setMostrarFormulario(true);
-                                    setFormulario(formularioInicial);
+                                    setFormulario({ ...formularioInicial });
                                     setProductoEditando(null);
                                     setMensaje("");
                                     setError(false);
@@ -440,6 +356,7 @@ function Products() {
                         </button>
                     </div>
 
+                    {/* Mensajes de éxito o error */}
                     {mensaje && (
                         <div
                             className={`products-message ${
@@ -452,10 +369,12 @@ function Products() {
                             <span aria-hidden="true">
                                 {error ? "!" : "✓"}
                             </span>
+
                             {mensaje}
                         </div>
                     )}
 
+                    {/* Formulario de registro y edición */}
                     {mostrarFormulario && (
                         <form
                             className="products-form products-form-modern"
@@ -466,11 +385,13 @@ function Products() {
                                     <span className="erp-page-eyebrow">
                                         CATÁLOGO DE PRODUCTOS
                                     </span>
+
                                     <h2>
                                         {productoEditando !== null
                                             ? "Editar producto"
                                             : "Registrar producto"}
                                     </h2>
+
                                     <p>
                                         Los campos marcados con * son
                                         obligatorios.
@@ -549,6 +470,7 @@ function Products() {
                                         <option value="">
                                             Selecciona una categoría
                                         </option>
+
                                         {categorias.map((categoria) => (
                                             <option
                                                 key={categoria.id_categoria}
@@ -571,6 +493,7 @@ function Products() {
                                         <option value="">
                                             Selecciona un proveedor
                                         </option>
+
                                         {proveedores.map((proveedor) => (
                                             <option
                                                 key={proveedor.id_proveedor}
@@ -607,10 +530,12 @@ function Products() {
                         </form>
                     )}
 
+                    {/* Tabla de productos */}
                     <section className="products-table-container products-table-modern">
                         <div className="products-table-heading">
                             <div>
                                 <h2>Catálogo de productos</h2>
+
                                 <p>
                                     Consulta y administra los registros
                                     guardados en la base de datos.
@@ -654,6 +579,7 @@ function Products() {
                                                     <span className="products-name">
                                                         {producto.nombre}
                                                     </span>
+
                                                     {producto.descripcion && (
                                                         <span className="products-description">
                                                             {producto.descripcion}
@@ -743,14 +669,16 @@ function Products() {
                     </section>
                 </section>
 
+                {/* Pie de página */}
                 <footer className="erp-dashboard-footer">
                     <span>ERP para PYMES</span>
+
                     <span>
                         Los datos se consultan y guardan en MySQL.
                     </span>
                 </footer>
             </main>
-        </div>
+        </ERPLayout>
     );
 }
 

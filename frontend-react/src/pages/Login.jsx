@@ -34,28 +34,33 @@ function Login() {
                 }
             );
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                setEsError(true);
-                setMensaje(
-                    data.mensaje ||
-                    "No fue posible iniciar sesión."
-                );
-                return;
-            }
-
             
-            if (!data.usuario) {
-                setEsError(true);
-                setMensaje("El servidor no devolvió los datos del usuario.");
-                return;
-            }
+const data = await response.json();
 
-            sessionStorage.setItem(
+if (!response.ok) {
+    setEsError(true);
+    setMensaje(
+        data.mensaje ||
+        "No fue posible iniciar sesión."
+    );
+    return;
+}
+
+if (!data.usuario) {
+    setEsError(true);
+    setMensaje("El servidor no devolvió los datos del usuario.");
+    return;
+}
+
+sessionStorage.setItem(
     "erp_usuario",
     JSON.stringify(data.usuario)
 );
+
+navigate("/dashboard");
+
+
+navigate("/dashboard");
 
 console.log(
     "Usuario guardado:",

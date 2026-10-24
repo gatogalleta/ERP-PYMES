@@ -1,6 +1,7 @@
 
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ERPLayout from "../components/ERPLayout";
 import "../App.css";
 
 const indicadores = [
@@ -40,155 +41,53 @@ const indicadores = [
 
 function Dashboard() {
     const navigate = useNavigate();
-const [menuAbierto, setMenuAbierto] = useState(false);
 
-const [usuario] = useState(() => {
-    try {
-        return JSON.parse(
-            sessionStorage.getItem("erp_usuario") || "null"
-        );
-    } catch {
+    const [usuario] = useState(() => {
+        try {
+            return JSON.parse(
+                sessionStorage.getItem("erp_usuario") || "null"
+            );
+        } catch {
+            return null;
+        }
+    });
+
+    useEffect(() => {
+        if (!usuario) {
+            navigate("/login", { replace: true });
+        }
+    }, [usuario, navigate]);
+
+    if (!usuario) {
         return null;
     }
-});
-
-useEffect(() => {
-    if (!usuario) {
-        navigate("/login", { replace: true });
-    }
-}, [usuario, navigate]);
-
-    const cerrarSesion = () => {
-    sessionStorage.removeItem("erp_usuario");
-    navigate("/login", { replace: true });
-};
 
     return (
-        <div className="erp-layout">
-            <button
-                type="button"
-                className="erp-mobile-menu"
-                onClick={() => setMenuAbierto(!menuAbierto)}
-                aria-label={
-                    menuAbierto
-                        ? "Cerrar menú de navegación"
-                        : "Abrir menú de navegación"
-                }
-                aria-expanded={menuAbierto}
-            >
-                {menuAbierto ? "✕" : "☰"}
-            </button>
-
-            {menuAbierto && (
-                <button
-                    type="button"
-                    className="erp-mobile-overlay"
-                    aria-label="Cerrar menú"
-                    onClick={() => setMenuAbierto(false)}
-                />
-            )}
-
-            <aside
-                className={`erp-sidebar ${
-                    menuAbierto ? "erp-sidebar-open" : ""
-                }`}
-            >
-                <Link
-                    to="/dashboard"
-                    className="erp-brand"
-                    onClick={() => setMenuAbierto(false)}
-                >
-                    <span className="erp-brand-icon">E</span>
-                    <span className="erp-brand-text">
-                        ERP
-                        <strong>PARA PYMES</strong>
-                    </span>
-                </Link>
-
-                <div className="erp-sidebar-caption">
-                    MENÚ PRINCIPAL
-                </div>
-
-                <nav aria-label="Navegación principal">
-                    <Link
-                        to="/dashboard"
-                        className="erp-nav-link erp-nav-active"
-                        onClick={() => setMenuAbierto(false)}
-                    >
-                        <span className="erp-nav-icon">▦</span>
-                        Dashboard
-                    </Link>
-
-                    <Link
-                        to="/products"
-                        className="erp-nav-link"
-                        onClick={() => setMenuAbierto(false)}
-                    >
-                        <span className="erp-nav-icon">▤</span>
-                        Productos
-                    </Link>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">↗</span>
-                        Ventas
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">▥</span>
-                        Inventario
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-
-                    <div className="erp-nav-link erp-nav-disabled">
-                        <span className="erp-nav-icon">▧</span>
-                        Reportes
-                        <span className="erp-nav-badge">Próximo</span>
-                    </div>
-                </nav>
-
-                <div className="erp-sidebar-bottom">
-                    <div className="erp-sidebar-help">
-                        <span className="erp-help-icon">i</span>
-                        <div>
-                            <strong>ERP para PYMES</strong>
-                            <p>Plataforma de gestión empresarial</p>
-                        </div>
-                    </div>
-
-                    <button
-                        type="button"
-                        className="erp-logout"
-                        onClick={cerrarSesion}
-                    >
-                        <span>↪</span>
-                        Volver al inicio
-                    </button>
-                </div>
-            </aside>
-
+        <ERPLayout>
             <main className="erp-main">
                 <header className="erp-header erp-header-modern">
                     <div className="erp-header-title">
                         <span className="erp-page-eyebrow">
                             ESPACIO DE TRABAJO
                         </span>
+
                         <h1>Panel principal</h1>
+
                         <p>
                             Consulta el estado de los módulos de tu ERP.
                         </p>
                     </div>
 
                     <div className="erp-header-profile">
-    <div className="erp-profile-avatar">
-        {usuario?.nombre?.trim()?.charAt(0)?.toUpperCase() || "U"}
-    </div>
+                        <div className="erp-profile-avatar">
+                            {usuario?.nombre?.trim()?.charAt(0)?.toUpperCase() || "U"}
+                        </div>
 
-    <div className="erp-profile-info">
-        <strong>{usuario?.nombre || "Usuario"}</strong>
-        <span>{usuario?.rol || "Usuario del sistema"}</span>
-    </div>
-</div>
+                        <div className="erp-profile-info">
+                            <strong>{usuario?.nombre || "Usuario"}</strong>
+                            <span>{usuario?.rol || "Usuario del sistema"}</span>
+                        </div>
+                    </div>
                 </header>
 
                 <section className="erp-welcome erp-welcome-modern">
@@ -231,6 +130,7 @@ useEffect(() => {
                 <section className="erp-modules-heading">
                     <div>
                         <h2>Módulos del sistema</h2>
+
                         <p>
                             Accede a las funcionalidades disponibles.
                         </p>
@@ -260,6 +160,7 @@ useEffect(() => {
 
                                 <div className="erp-card-title-row">
                                     <h3>{indicador.titulo}</h3>
+
                                     {indicador.disponible ? (
                                         <span className="erp-status-available">
                                             Disponible
@@ -302,10 +203,12 @@ useEffect(() => {
 
                 <footer className="erp-dashboard-footer">
                     <span>ERP para PYMES</span>
-                    <span>Plataforma de gestión empresarial · 2026</span>
+                    <span>
+                        Plataforma de gestión empresarial · 2026
+                    </span>
                 </footer>
             </main>
-        </div>
+        </ERPLayout>
     );
 }
 
