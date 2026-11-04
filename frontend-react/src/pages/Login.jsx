@@ -34,43 +34,49 @@ function Login() {
                 }
             );
 
-            
-const data = await response.json();
+            const data = await response.json();
 
-if (!response.ok) {
-    setEsError(true);
-    setMensaje(
-        data.mensaje ||
-        "No fue posible iniciar sesión."
-    );
-    return;
-}
+            if (!response.ok) {
+                setEsError(true);
+                setMensaje(
+                    data.mensaje ||
+                    "No fue posible iniciar sesión."
+                );
+                return;
+            }
 
-if (!data.usuario) {
-    setEsError(true);
-    setMensaje("El servidor no devolvió los datos del usuario.");
-    return;
-}
+            if (!data.usuario || !data.token) {
+                setEsError(true);
+                setMensaje(
+                    "El servidor no devolvió el usuario o el token."
+                );
+                return;
+            }
 
-sessionStorage.setItem(
-    "erp_usuario",
-    JSON.stringify(data.usuario)
-);
+            // Guardar los datos de la sesión.
+            sessionStorage.setItem(
+                "erp_usuario",
+                JSON.stringify(data.usuario)
+            );
 
-navigate("/dashboard");
+            sessionStorage.setItem(
+                "erp_token",
+                data.token
+            );
 
+            // Verificar que la sesión se haya guardado.
+            console.log(
+                "Sesión guardada:",
+                Boolean(sessionStorage.getItem("erp_token")),
+                Boolean(sessionStorage.getItem("erp_usuario"))
+            );
 
-navigate("/dashboard");
-
-console.log(
-    "Usuario guardado:",
-    sessionStorage.getItem("erp_usuario")
-);
-
-navigate("/dashboard");
+            // Entrar al dashboard.
+            navigate("/dashboard", { replace: true });
 
         } catch (error) {
             console.error("Error de conexión:", error);
+
             setEsError(true);
             setMensaje(
                 "No fue posible conectar con el servidor. Verifica que el backend esté funcionando."
@@ -91,88 +97,44 @@ navigate("/dashboard");
             </Link>
 
             <section className="login-container">
-                <div className="login-brand">
-                    <div className="login-brand-icon">E</div>
-
-                    <p className="login-brand-name">
-                        ERP <strong>PARA PYMES</strong>
-                    </p>
-
-                    <span className="login-brand-caption">
-                        GESTIÓN EMPRESARIAL
-                    </span>
-                </div>
-
                 <div className="login-card">
-                    <div className="login-card-heading">
-                        <span className="login-eyebrow">
-                            BIENVENIDO DE NUEVO
-                        </span>
-
-                        <h1>Iniciar sesión</h1>
-
-                        <p>
-                            Ingresa tus credenciales para acceder
-                            a tu espacio de trabajo.
-                        </p>
+                    <div className="login-header">
+                        <h1>ERP para PYMES</h1>
+                        <p>Ingresa a tu cuenta</p>
                     </div>
 
-                    <form
-                        className="login-form"
-                        onSubmit={handleSubmit}
-                    >
-                        <div className="login-field">
+                    <form onSubmit={handleSubmit}>
+                        <div className="login-form-group">
                             <label htmlFor="email">
                                 Correo electrónico
                             </label>
 
-                            <div className="login-input-wrap">
-                                <span
-                                    className="login-input-icon"
-                                    aria-hidden="true"
-                                >
-                                    @
-                                </span>
-
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(event) =>
-                                        setEmail(event.target.value)
-                                    }
-                                    placeholder="nombre@empresa.com"
-                                    autoComplete="username"
-                                    required
-                                />
-                            </div>
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(event) =>
+                                    setEmail(event.target.value)
+                                }
+                                placeholder="correo@ejemplo.com"
+                                autoComplete="username"
+                                required
+                            />
                         </div>
 
-                        <div className="login-field">
-                            <div className="login-password-heading">
-                                <label htmlFor="password">
-                                    Contraseña
-                                </label>
-                                <span className="login-private-label">
-                                    Acceso seguro
-                                </span>
-                            </div>
+                        <div className="login-form-group">
+                            <label htmlFor="password">
+                                Contraseña
+                            </label>
 
-                            <div className="login-input-wrap">
-                                <span
-                                    className="login-input-icon"
-                                    aria-hidden="true"
-                                >
-                                    *
-                                </span>
-
+                            <div className="login-password-wrapper">
                                 <input
+                                    id="password"
                                     type={
                                         mostrarPassword
                                             ? "text"
                                             : "password"
                                     }
-                                    id="password"
                                     value={password}
                                     onChange={(event) =>
                                         setPassword(event.target.value)
@@ -184,11 +146,9 @@ navigate("/dashboard");
 
                                 <button
                                     type="button"
-                                    className="login-show-password"
+                                    className="login-password-toggle"
                                     onClick={() =>
-                                        setMostrarPassword(
-                                            !mostrarPassword
-                                        )
+                                        setMostrarPassword(!mostrarPassword)
                                     }
                                     aria-label={
                                         mostrarPassword
@@ -196,9 +156,7 @@ navigate("/dashboard");
                                             : "Mostrar contraseña"
                                     }
                                 >
-                                    {mostrarPassword
-                                        ? "Ocultar"
-                                        : "Ver"}
+                                    {mostrarPassword ? "Ocultar" : "Mostrar"}
                                 </button>
                             </div>
                         </div>
@@ -207,15 +165,12 @@ navigate("/dashboard");
                             <div
                                 className={
                                     esError
-                                        ? "login-message login-message-error"
-                                        : "login-message login-message-success"
+                                        ? "login-message login-error"
+                                        : "login-message"
                                 }
                                 role="alert"
                             >
-                                <span aria-hidden="true">
-                                    {esError ? "!" : "✓"}
-                                </span>
-                                <p>{mensaje}</p>
+                                {mensaje}
                             </div>
                         )}
 
@@ -225,27 +180,11 @@ navigate("/dashboard");
                             disabled={cargando}
                         >
                             {cargando
-                                ? "Verificando acceso..."
-                                : "Ingresar al sistema"}
-
-                            {!cargando && (
-                                <span aria-hidden="true">→</span>
-                            )}
+                                ? "Ingresando..."
+                                : "Iniciar sesión"}
                         </button>
                     </form>
-
-                    <div className="login-security-note">
-                        <span aria-hidden="true">✓</span>
-                        <p>
-                            Tu acceso es validado por el servidor
-                            del sistema.
-                        </p>
-                    </div>
                 </div>
-
-                <p className="login-footer">
-                    © 2026 ERP para PYMES · Plataforma de gestión empresarial
-                </p>
             </section>
         </main>
     );

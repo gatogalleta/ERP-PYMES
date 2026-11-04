@@ -10,8 +10,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-// Rutas principales del ERP para PYMES.
 function App() {
     return (
         <BrowserRouter>
@@ -22,18 +22,20 @@ function App() {
                 {/* Inicio de sesión */}
                 <Route path="/login" element={<Login />} />
 
-                {/* Módulos existentes del ERP */}
-                <Route
-                    path="/dashboard"
-                    element={<Dashboard />}
-                />
+                {/* Rutas privadas del ERP */}
+                <Route element={<ProtectedRoute />}>
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
 
-                <Route
-                    path="/products"
-                    element={<Products />}
-                />
+                    <Route
+                        path="/products"
+                        element={<Products />}
+                    />
+                </Route>
 
-                {/* Redirigir las rutas desconocidas al inicio */}
+                {/* Rutas desconocidas */}
                 <Route
                     path="*"
                     element={<Navigate to="/" replace />}

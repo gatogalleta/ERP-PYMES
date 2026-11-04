@@ -9,9 +9,21 @@ const {
     actualizarProducto
 } = require("../controllers/productosController");
 
-router.get("/", listarProductos);
-router.post("/", crearProducto);
-router.delete("/:id", eliminarProducto);
-router.put("/:id", actualizarProducto);
+const {
+    verificarToken,
+    permitirRoles
+} = require("../middlewares/authMiddleware");
+
+// Consultar productos: requiere iniciar sesión.
+router.get("/", verificarToken, listarProductos);
+
+// Crear productos: solo administradores.
+router.post("/", verificarToken, permitirRoles("Administrador"), crearProducto);
+
+// Actualizar productos: solo administradores.
+router.put("/:id", verificarToken, permitirRoles("Administrador"), actualizarProducto);
+
+// Eliminar productos: solo administradores.
+router.delete("/:id", verificarToken, permitirRoles("Administrador"), eliminarProducto);
 
 module.exports = router;

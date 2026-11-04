@@ -6,6 +6,11 @@ const {
     listarProveedores
 } = require("../controllers/proveedoresController");
 
-router.get("/", listarProveedores);
+const {
+    verificarToken
+} = require("../middlewares/authMiddleware");
+
+// Consultar proveedores: requiere iniciar sesión.
+router.get("/", verificarToken, listarProveedores);
 
 module.exports = router;

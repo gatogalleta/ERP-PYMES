@@ -1,6 +1,5 @@
-
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import ERPLayout from "../components/ERPLayout";
 import "../App.css";
 
@@ -40,8 +39,6 @@ const indicadores = [
 ];
 
 function Dashboard() {
-    const navigate = useNavigate();
-
     const [usuario] = useState(() => {
         try {
             return JSON.parse(
@@ -51,12 +48,6 @@ function Dashboard() {
             return null;
         }
     });
-
-    useEffect(() => {
-        if (!usuario) {
-            navigate("/login", { replace: true });
-        }
-    }, [usuario, navigate]);
 
     if (!usuario) {
         return null;

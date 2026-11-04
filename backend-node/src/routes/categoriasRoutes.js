@@ -6,6 +6,11 @@ const {
     listarCategorias
 } = require("../controllers/categoriasController");
 
-router.get("/", listarCategorias);
+const {
+    verificarToken
+} = require("../middlewares/authMiddleware");
+
+// Consultar categorías: requiere iniciar sesión.
+router.get("/", verificarToken, listarCategorias);
 
 module.exports = router;

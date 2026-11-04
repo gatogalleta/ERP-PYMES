@@ -1,5 +1,6 @@
 ﻿const pool = require("../config/database");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // Controlador para registrar usuarios nuevos
 async function register(req, res) {
@@ -165,24 +166,74 @@ async function login(req, res) {
         // Rechazar credenciales incorrectas
         if (!passwordCorrecta) {
             return res.status(401).json({
-                mensaje: "Correo o contraseÃ±a incorrectos."
+                mensaje: "Correo o contraseña incorrectos."
             });
         }
 
-        // Eliminar la contraseÃ±a de la respuesta al cliente
+        // Eliminar la contraseña de la respuesta al cliente
         delete usuario.password;
 
-        // Informar que la autenticaciÃ³n fue exitosa
+        // Crear un token JWT para identificar al usuario autenticado
+        const token = jwt.sign(
+            {
+                id_usuario: usuario.id_usuario,
+                email: usuario.email,
+                rol: usuario.rol
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "2h"
+            }
+        );
+
+        // Responder con el token y los datos públicos del usuario
         return res.status(200).json({
-            mensaje: "Inicio de sesiÃ³n exitoso.",
+            mensaje: "Inicio de sesión exitoso.",
+            token,
             usuario
         });
+
     } catch (error) {
-        // Registrar errores tÃ©cnicos sin exponerlos al cliente
-        console.error("Error en la autenticaciÃ³n:", error.message);
+        // Registrar errores técnicos sin exponerlos al cliente
+        console.error("Error en la autenticación:", error.message);
 
         return res.status(500).json({
             mensaje: "Error interno del servidor."
+        });
+    }
+}
+// Consultar el perfil del usuario autenticado
+async function me(req, res) {
+    try {
+        const idUsuario = req.usuario.id_usuario;
+
+        // Consultar los datos actuales del usuario activo
+        const [usuarios] = await pool.query(
+            `SELECT id_usuario, nombre, email, rol, estado
+             FROM usuarios
+             WHERE id_usuario = ? AND estado = 1
+             LIMIT 1`,
+            [idUsuario]
+        );
+
+        // Verificar que el usuario exista y esté activo
+        if (usuarios.length === 0) {
+            return res.status(401).json({
+                mensaje: "El usuario no existe o está inactivo."
+            });
+        }
+
+        // Devolver únicamente información pública
+        return res.status(200).json({
+            mensaje: "Perfil consultado correctamente.",
+            usuario: usuarios[0]
+        });
+
+    } catch (error) {
+        console.error("Error al consultar el perfil:", error.message);
+
+        return res.status(500).json({
+            mensaje: "Error interno al consultar el perfil."
         });
     }
 }
@@ -190,5 +241,6 @@ async function login(req, res) {
 // Exportar los controladores para utilizarlos en las rutas
 module.exports = {
     register,
-    login
+    login,
+    me
 };

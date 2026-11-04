@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from "react";
 import ERPLayout from "../components/ERPLayout";
 import "../App.css";
@@ -22,6 +23,16 @@ function formatoCOP(valor) {
 }
 
 function Products() {
+    // Obtener la sesión y los permisos del usuario.
+    const usuario = JSON.parse(
+        sessionStorage.getItem("erp_usuario") || "null"
+    );
+
+    const esAdministrador = usuario?.rol === "Administrador";
+
+    // Token utilizado para las peticiones protegidas.
+    const token = sessionStorage.getItem("erp_token");
+
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [proveedores, setProveedores] = useState([]);
@@ -36,20 +47,36 @@ function Products() {
     const [cargando, setCargando] = useState(true);
     const [guardando, setGuardando] = useState(false);
 
-    // Consultar los productos, las categorías y los proveedores.
+    // Consultar productos, categorías y proveedores.
     const cargarDatos = useCallback(async () => {
-        setCargando(true);
-        setError(false);
 
         try {
+            const encabezados = token
+                ? { Authorization: `Bearer ${token}` }
+                : {};
+
             const respuestas = await Promise.all([
-                fetch(`${API_URL}/productos`),
-                fetch(`${API_URL}/categorias`),
-                fetch(`${API_URL}/proveedores`),
+                fetch(`${API_URL}/productos`, {
+                    headers: encabezados,
+                }),
+                fetch(`${API_URL}/categorias`, {
+                    headers: encabezados,
+                }),
+                fetch(`${API_URL}/proveedores`, {
+                    headers: encabezados,
+                }),
             ]);
 
             if (respuestas.some((respuesta) => !respuesta.ok)) {
-                throw new Error("No fue posible consultar los datos.");
+                if (respuestas.some((respuesta) => respuesta.status === 401)) {
+                    throw new Error(
+                        "Tu sesión no es válida o ha expirado. Inicia sesión nuevamente."
+                    );
+                }
+
+                throw new Error(
+                    "No fue posible consultar los datos. Verifica los permisos y el backend."
+                );
             }
 
             const [
@@ -67,16 +94,19 @@ function Products() {
             console.error("Error al cargar el catálogo:", err);
             setError(true);
             setMensaje(
-                "No fue posible cargar los datos. Verifica que el backend esté funcionando."
+                err.message ||
+                    "No fue posible cargar los datos. Verifica que el backend esté funcionando."
             );
         } finally {
             setCargando(false);
         }
-    }, []);
+    }, [token]);
 
     useEffect(() => {
+    Promise.resolve().then(() => {
         cargarDatos();
-    }, [cargarDatos]);
+    });
+}, [cargarDatos]);
 
     // Buscar por nombre, categoría o proveedor.
     const productosFiltrados = productos.filter((producto) =>
@@ -85,7 +115,6 @@ function Products() {
             .includes(busqueda.trim().toLowerCase())
     );
 
-    // Contar los productos activos.
     const productosActivos = productos.filter(
         (producto) => Number(producto.estado) === 1
     ).length;
@@ -102,6 +131,8 @@ function Products() {
 
     // Abrir el formulario con los datos del producto elegido.
     function editarProducto(producto) {
+        if (!esAdministrador) return;
+
         setProductoEditando(producto.id_producto);
 
         setFormulario({
@@ -123,7 +154,7 @@ function Products() {
     // Limpiar el formulario y cancelar la edición.
     function cancelarFormulario() {
         setMostrarFormulario(false);
-        setFormulario({ ...formularioInicial });
+        setFormulario(formularioInicial);
         setProductoEditando(null);
         setMensaje("");
         setError(false);
@@ -132,6 +163,16 @@ function Products() {
     // Registrar o actualizar un producto en MySQL.
     async function registrarProducto(evento) {
         evento.preventDefault();
+
+        // Validación adicional del rol en el frontend.
+        if (!esAdministrador) {
+            setError(true);
+            setMensaje(
+                "No tienes permisos para registrar o modificar productos."
+            );
+            return;
+        }
+
         setMensaje("");
         setError(false);
 
@@ -176,6 +217,7 @@ function Products() {
                 method: editando ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     nombre: formulario.nombre.trim(),
@@ -196,7 +238,7 @@ function Products() {
                 );
             }
 
-            setFormulario({ ...formularioInicial });
+            setFormulario(formularioInicial);
             setProductoEditando(null);
             setMostrarFormulario(false);
 
@@ -210,7 +252,9 @@ function Products() {
         } catch (err) {
             console.error("Error al guardar producto:", err);
             setError(true);
-            setMensaje(err.message || "Error al guardar el producto.");
+            setMensaje(
+                err.message || "Error al guardar el producto."
+            );
         } finally {
             setGuardando(false);
         }
@@ -218,6 +262,8 @@ function Products() {
 
     // Eliminar un producto de la base de datos.
     async function eliminarProducto(id) {
+        if (!esAdministrador) return;
+
         const confirmar = window.confirm(
             "¿Deseas eliminar este producto de la base de datos?"
         );
@@ -228,9 +274,15 @@ function Products() {
         setError(false);
 
         try {
-            const respuesta = await fetch(`${API_URL}/productos/${id}`, {
-                method: "DELETE",
-            });
+            const respuesta = await fetch(
+                `${API_URL}/productos/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             const resultado = await respuesta.json();
 
@@ -241,19 +293,23 @@ function Products() {
                 );
             }
 
-            setMensaje("Producto eliminado correctamente de MySQL.");
+            setMensaje(
+                "Producto eliminado correctamente de MySQL."
+            );
+
             await cargarDatos();
         } catch (err) {
             console.error("Error al eliminar producto:", err);
             setError(true);
-            setMensaje(err.message || "Error al eliminar el producto.");
+            setMensaje(
+                err.message || "Error al eliminar el producto."
+            );
         }
     }
 
     return (
         <ERPLayout>
             <main className="erp-main products-main">
-                {/* Encabezado de la página */}
                 <header className="erp-header-modern">
                     <div className="erp-header-title">
                         <span className="erp-page-eyebrow">
@@ -269,19 +325,37 @@ function Products() {
                     </div>
 
                     <div className="erp-header-profile">
-                        <div className="erp-profile-avatar">E</div>
+                        <div className="erp-profile-avatar">
+                            {(
+                                usuario?.nombre ||
+                                usuario?.email ||
+                                "U"
+                            )
+                                .charAt(0)
+                                .toUpperCase()}
+                        </div>
 
                         <div className="erp-profile-info">
-                            <strong>Usuario del sistema</strong>
-                            <span>Área de administración</span>
+                            <strong>
+                                {usuario?.nombre ||
+                                    usuario?.email ||
+                                    "Usuario del sistema"}
+                            </strong>
+
+                            <span>
+                                {esAdministrador
+                                    ? "Administrador"
+                                    : "Usuario"}
+                            </span>
                         </div>
                     </div>
                 </header>
 
-                {/* Tarjetas de resumen */}
                 <section className="products-summary">
                     <article className="products-summary-card">
-                        <span className="products-summary-icon">▤</span>
+                        <span className="products-summary-icon">
+                            ▤
+                        </span>
 
                         <div>
                             <p>Total de productos</p>
@@ -318,7 +392,6 @@ function Products() {
                     </article>
                 </section>
 
-                {/* Área de búsqueda y administración */}
                 <section className="products-workspace">
                     <div className="products-toolbar products-toolbar-modern">
                         <div className="products-search">
@@ -335,28 +408,29 @@ function Products() {
                             />
                         </div>
 
-                        <button
-                            type="button"
-                            className="products-add-button"
-                            onClick={() => {
-                                if (mostrarFormulario) {
-                                    cancelarFormulario();
-                                } else {
-                                    setMostrarFormulario(true);
-                                    setFormulario({ ...formularioInicial });
-                                    setProductoEditando(null);
-                                    setMensaje("");
-                                    setError(false);
-                                }
-                            }}
-                        >
-                            {mostrarFormulario
-                                ? "Cancelar"
-                                : "+ Agregar producto"}
-                        </button>
+                        {esAdministrador && (
+                            <button
+                                type="button"
+                                className="products-add-button"
+                                onClick={() => {
+                                    if (mostrarFormulario) {
+                                        cancelarFormulario();
+                                    } else {
+                                        setMostrarFormulario(true);
+                                        setFormulario(formularioInicial);
+                                        setProductoEditando(null);
+                                        setMensaje("");
+                                        setError(false);
+                                    }
+                                }}
+                            >
+                                {mostrarFormulario
+                                    ? "Cancelar"
+                                    : "+ Agregar producto"}
+                            </button>
+                        )}
                     </div>
 
-                    {/* Mensajes de éxito o error */}
                     {mensaje && (
                         <div
                             className={`products-message ${
@@ -374,8 +448,7 @@ function Products() {
                         </div>
                     )}
 
-                    {/* Formulario de registro y edición */}
-                    {mostrarFormulario && (
+                    {esAdministrador && mostrarFormulario && (
                         <form
                             className="products-form products-form-modern"
                             onSubmit={registrarProducto}
@@ -530,15 +603,14 @@ function Products() {
                         </form>
                     )}
 
-                    {/* Tabla de productos */}
                     <section className="products-table-container products-table-modern">
                         <div className="products-table-heading">
                             <div>
                                 <h2>Catálogo de productos</h2>
 
                                 <p>
-                                    Consulta y administra los registros
-                                    guardados en la base de datos.
+                                    Consulta los registros guardados
+                                    en la base de datos.
                                 </p>
                             </div>
 
@@ -568,92 +640,107 @@ function Products() {
                                             <th>Precio de compra</th>
                                             <th>Precio de venta</th>
                                             <th>Estado</th>
-                                            <th>Acciones</th>
+
+                                            {esAdministrador && (
+                                                <th>Acciones</th>
+                                            )}
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        {productosFiltrados.map((producto) => (
-                                            <tr key={producto.id_producto}>
-                                                <td>
-                                                    <span className="products-name">
-                                                        {producto.nombre}
-                                                    </span>
-
-                                                    {producto.descripcion && (
-                                                        <span className="products-description">
-                                                            {producto.descripcion}
+                                        {productosFiltrados.map(
+                                            (producto) => (
+                                                <tr
+                                                    key={producto.id_producto}
+                                                >
+                                                    <td>
+                                                        <span className="products-name">
+                                                            {producto.nombre}
                                                         </span>
-                                                    )}
-                                                </td>
 
-                                                <td>
-                                                    {producto.categoria || "—"}
-                                                </td>
+                                                        {producto.descripcion && (
+                                                            <span className="products-description">
+                                                                {producto.descripcion}
+                                                            </span>
+                                                        )}
+                                                    </td>
 
-                                                <td>
-                                                    {producto.proveedor || "—"}
-                                                </td>
+                                                    <td>
+                                                        {producto.categoria || "—"}
+                                                    </td>
 
-                                                <td className="products-price">
-                                                    {formatoCOP(
-                                                        producto.precio_compra
-                                                    )}
-                                                </td>
+                                                    <td>
+                                                        {producto.proveedor || "—"}
+                                                    </td>
 
-                                                <td className="products-price">
-                                                    {formatoCOP(
-                                                        producto.precio_venta
-                                                    )}
-                                                </td>
+                                                    <td className="products-price">
+                                                        {formatoCOP(
+                                                            producto.precio_compra
+                                                        )}
+                                                    </td>
 
-                                                <td>
-                                                    <span
-                                                        className={
-                                                            Number(producto.estado) === 1
-                                                                ? "products-status products-status-active"
-                                                                : "products-status products-status-inactive"
-                                                        }
-                                                    >
-                                                        {Number(producto.estado) === 1
-                                                            ? "Activo"
-                                                            : "Inactivo"}
-                                                    </span>
-                                                </td>
+                                                    <td className="products-price">
+                                                        {formatoCOP(
+                                                            producto.precio_venta
+                                                        )}
+                                                    </td>
 
-                                                <td>
-                                                    <div className="products-actions">
-                                                        <button
-                                                            type="button"
-                                                            className="products-edit-button"
-                                                            onClick={() =>
-                                                                editarProducto(producto)
+                                                    <td>
+                                                        <span
+                                                            className={
+                                                                Number(producto.estado) === 1
+                                                                    ? "products-status products-status-active"
+                                                                    : "products-status products-status-inactive"
                                                             }
                                                         >
-                                                            Editar
-                                                        </button>
+                                                            {Number(producto.estado) === 1
+                                                                ? "Activo"
+                                                                : "Inactivo"}
+                                                        </span>
+                                                    </td>
 
-                                                        <button
-                                                            type="button"
-                                                            className="products-delete"
-                                                            onClick={() =>
-                                                                eliminarProducto(
-                                                                    producto.id_producto
-                                                                )
-                                                            }
-                                                        >
-                                                            Eliminar
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                    {esAdministrador && (
+                                                        <td>
+                                                            <div className="products-actions">
+                                                                <button
+                                                                    type="button"
+                                                                    className="products-edit-button"
+                                                                    onClick={() =>
+                                                                        editarProducto(
+                                                                            producto
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Editar
+                                                                </button>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="products-delete"
+                                                                    onClick={() =>
+                                                                        eliminarProducto(
+                                                                            producto.id_producto
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Eliminar
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            )
+                                        )}
 
                                         {!error &&
                                             productosFiltrados.length === 0 && (
                                                 <tr>
                                                     <td
-                                                        colSpan="7"
+                                                        colSpan={
+                                                            esAdministrador
+                                                                ? 7
+                                                                : 6
+                                                        }
                                                         className="products-empty"
                                                     >
                                                         {busqueda
@@ -669,7 +756,6 @@ function Products() {
                     </section>
                 </section>
 
-                {/* Pie de página */}
                 <footer className="erp-dashboard-footer">
                     <span>ERP para PYMES</span>
 

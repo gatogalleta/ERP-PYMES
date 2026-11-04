@@ -9,10 +9,12 @@ function ERPLayout({ children }) {
     const navigate = useNavigate();
 
     const cerrarSesion = () => {
-        sessionStorage.removeItem("erp_usuario");
-        setMenuAbierto(false);
-        navigate("/login", { replace: true });
-    };
+    sessionStorage.removeItem("erp_usuario");
+    sessionStorage.removeItem("erp_token");
+
+    setMenuAbierto(false);
+    navigate("/login", { replace: true });
+};
 
     const cerrarMenu = () => {
         setMenuAbierto(false);

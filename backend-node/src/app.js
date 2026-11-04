@@ -7,7 +7,10 @@ const categoriasRoutes = require("./routes/categoriasRoutes");
 const proveedoresRoutes = require("./routes/proveedoresRoutes");
 const app = express();
 const PORT = 3000;
-
+const {
+    verificarToken,
+    permitirRoles
+} = require("./middlewares/authMiddleware");
 // Middlewares
 app.use(cors());
 app.use(express.json());
@@ -26,7 +29,11 @@ app.get("/", (req, res) => {
 });
 
 // Consultar usuarios
-app.get("/api/usuarios", async (req, res) => {
+app.get(
+    "/api/usuarios",
+    verificarToken,
+    permitirRoles("Administrador"),
+    async (req, res) => {
     try {
         const [usuarios] = await pool.query(`
             SELECT id_usuario, nombre, email, rol, estado
